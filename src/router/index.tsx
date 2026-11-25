@@ -8,6 +8,7 @@ import NotFoundPage from '@/pages/NotFoundPage';
 import { buildDomainEntries, flattenLeaves, navigation } from '@/config/menu';
 import RequireAuth from './RequireAuth';
 import PermissionGate from './PermissionGate';
+import { resolvePage } from './pageRegistry';
 
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const ModulePage = lazy(() => import('@/pages/ModulePage'));
@@ -28,17 +29,20 @@ function boundary(element: ReactNode) {
 /** 业务页面由导航树派生，路由文件不重复声明路径与权限码 */
 const pageRoutes = flattenLeaves(navigation)
   .filter((node) => node.path && node.path !== '/dashboard')
-  .map((node) => (
-    <Route
-      key={node.path}
-      path={node.path}
-      element={boundary(
-        <PermissionGate permission={node.permission}>
-          <ModulePage />
-        </PermissionGate>,
-      )}
-    />
-  ));
+  .map((node) => {
+    const RealPage = resolvePage(node.path);
+    return (
+      <Route
+        key={node.path}
+        path={node.path}
+        element={boundary(
+          <PermissionGate permission={node.permission}>
+            {RealPage ? <RealPage /> : <ModulePage />}
+          </PermissionGate>,
+        )}
+      />
+    );
+  });
 
 /** 业务域根路径重定向到域内第一个页面 */
 const domainRedirects = buildDomainEntries(navigation).map((domain) => (

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { App, Button, Checkbox, Form, Input, Tag } from 'antd';
+import { App, Button, Checkbox, Form, Input, Modal, Tag } from 'antd';
 import { LockOutlined, SafetyCertificateOutlined, UserOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import BrandLogo from '@/layouts/components/BrandLogo';
 import { DEMO_PASSWORD, demoAccounts } from '@/config/roles';
 import { useAuth } from '@/store/auth';
+import { changePassword } from '@/services/auth';
 import { readText, STORAGE_KEYS } from '@/utils/storage';
 
 interface LoginFormValues {
@@ -23,19 +24,47 @@ export default function LoginPage() {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(Boolean(readText(STORAGE_KEYS.loginUserName)));
+  const [pwdModalOpen, setPwdModalOpen] = useState(false);
+  const [pwdSaving, setPwdSaving] = useState(false);
+  const [pwdForm] = Form.useForm<{ oldPassword: string; newPassword: string; confirmPassword: string }>();
 
   const from = (location.state as { from?: string } | null)?.from;
 
   const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
     try {
-      const user = await login(values.userName, values.password, remember);
-      message.success(`欢迎回来，${user.displayName}（${user.roleName}）`);
+      const result = await login(values.userName, values.password, remember);
+      message.success(`欢迎回来，${result.user.displayName}（${result.user.roleName}）`);
+      if (result.mustChangePassword) {
+        // 临时密码/重置密码后首次登录，强制修改密码（修改后后端会吊销令牌，需重新登录）
+        pwdForm.resetFields();
+        setPwdModalOpen(true);
+        return;
+      }
       navigate(from && from !== '/login' ? from : '/dashboard', { replace: true });
     } catch (error) {
       message.error(error instanceof Error ? error.message : '账号或密码错误，请重试');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    const values = await pwdForm.validateFields();
+    if (values.newPassword !== values.confirmPassword) {
+      pwdForm.setFields([{ name: 'confirmPassword', errors: ['两次输入的新密码不一致'] }]);
+      return;
+    }
+    setPwdSaving(true);
+    try {
+      await changePassword(values.oldPassword, values.newPassword);
+      message.success('密码修改成功，请使用新密码重新登录');
+      setPwdModalOpen(false);
+      navigate('/login', { replace: true });
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : '密码修改失败');
+    } finally {
+      setPwdSaving(false);
     }
   };
 
@@ -156,6 +185,45 @@ export default function LoginPage() {
         </div>
         <footer>© 2026 人脸通 · BS 管理平台</footer>
       </section>
+
+      <Modal
+        title="首次登录，请修改密码"
+        open={pwdModalOpen}
+        closable={false}
+        maskClosable={false}
+        keyboard={false}
+        confirmLoading={pwdSaving}
+        okText="修改并重新登录"
+        cancelButtonProps={{ style: { display: 'none' } }}
+        onOk={handleChangePassword}
+      >
+        <p style={{ marginBottom: 12, color: '#8793a3', fontSize: 12 }}>
+          当前使用的是临时密码，修改成功后需使用新密码重新登录。
+        </p>
+        <Form form={pwdForm} layout="vertical">
+          <Form.Item name="oldPassword" label="原密码" rules={[{ required: true, message: '请输入原密码' }]}>
+            <Input.Password maxLength={20} />
+          </Form.Item>
+          <Form.Item
+            name="newPassword"
+            label="新密码"
+            rules={[
+              { required: true, message: '请输入新密码' },
+              { pattern: /^(?=.*[A-Za-z])(?=.*\d).{8,20}$/, message: '8-20 位，需同时包含字母和数字' },
+            ]}
+          >
+            <Input.Password maxLength={20} placeholder="8-20 位，包含字母和数字" />
+          </Form.Item>
+          <Form.Item
+            name="confirmPassword"
+            label="确认新密码"
+            dependencies={['newPassword']}
+            rules={[{ required: true, message: '请再次输入新密码' }]}
+          >
+            <Input.Password maxLength={20} />
+          </Form.Item>
+        </Form>
+      </Modal>
     </main>
   );
 }

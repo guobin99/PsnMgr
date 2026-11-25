@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { SessionUser } from '@/types/navigation';
-import { login as loginRequest, logout as logoutRequest } from '@/services/auth';
+import { login as loginRequest, type LoginResult, logout as logoutRequest } from '@/services/auth';
 import { UNAUTHORIZED_EVENT } from '@/services/http';
 import { readStorage, readText, removeStorage, STORAGE_KEYS, writeStorage, writeText } from '@/utils/storage';
 
@@ -9,7 +9,7 @@ interface AuthContextValue {
   user: SessionUser | null;
   permissions: string[];
   isAuthenticated: boolean;
-  login: (userName: string, password: string, remember: boolean) => Promise<SessionUser>;
+  login: (userName: string, password: string, remember: boolean) => Promise<LoginResult>;
   logout: () => Promise<void>;
 }
 
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } else {
       removeStorage(STORAGE_KEYS.loginUserName);
     }
-    return result.user;
+    return result;
   }, []);
 
   const logout = useCallback(async () => {

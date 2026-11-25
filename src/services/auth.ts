@@ -5,6 +5,7 @@ import { ApiError, request } from './http';
 export interface LoginResult {
   token: string;
   user: SessionUser;
+  mustChangePassword?: boolean;
 }
 
 interface LoginPayload {
@@ -39,7 +40,12 @@ export async function login(payload: LoginPayload): Promise<LoginResult> {
 }
 
 export async function fetchProfile(): Promise<SessionUser> {
-  return request<SessionUser>({ url: '/auth/profile', method: 'post' });
+  const result = await request<SessionUser | { user: SessionUser }>({ url: '/auth/profile', method: 'post' });
+  // 后端 /auth/profile 返回 { user, menus, version }，取 user；兼容直接返回用户对象的旧结构
+  if (result && typeof result === 'object' && 'user' in result) {
+    return (result as { user: SessionUser }).user;
+  }
+  return result as SessionUser;
 }
 
 export async function logout(): Promise<void> {
@@ -48,4 +54,13 @@ export async function logout(): Promise<void> {
   } catch {
     /* 退出接口失败不阻塞本地会话清理 */
   }
+}
+
+/** 修改本人密码：需校验旧密码，且不能与最近三次历史重复 */
+export async function changePassword(oldPassword: string, newPassword: string): Promise<void> {
+  await request<void>({
+    url: '/auth/change-password',
+    method: 'post',
+    data: { oldPassword, newPassword },
+  });
 }

@@ -13,6 +13,13 @@ export default defineConfig({
     host: '127.0.0.1',
     port: 5173,
     open: false,
+    proxy: {
+      // 开发环境代理到 NetCore 后端（PsnMgrService，端口 5187）
+      '/api': {
+        target: 'http://127.0.0.1:5187',
+        changeOrigin: true,
+      },
+    },
   },
   build: {
     outDir: 'dist',

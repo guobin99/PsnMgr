@@ -2270,3 +2270,578 @@ a:focus-visible {
     display: none;
   }
 }
+
+/* ---------- 系统管理-组织与权限 ---------- */
+.system-page {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.system-context-card .ant-card-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+  padding: 14px;
+}
+
+.system-context-title {
+  margin: 0 0 12px;
+  color: #344054;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.system-context-search {
+  margin-bottom: 12px;
+}
+
+.system-context-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 560px;
+}
+
+.system-context-item {
+  display: block;
+  width: 100%;
+  padding: 10px 11px;
+  border: 1px solid #edf1f7;
+  border-radius: 8px;
+  color: inherit;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.system-context-item + .system-context-item {
+  margin-top: 8px;
+}
+
+.system-context-item:hover,
+.system-context-item.is-active {
+  border-color: #a9c3f9;
+  background: #f4f8ff;
+}
+
+.system-context-item strong {
+  display: block;
+  color: #344054;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.system-context-item span {
+  display: block;
+  margin-top: 3px;
+  color: #8793a3;
+  font-size: 10px;
+}
+
+.system-workspace {
+  min-width: 0;
+}
+
+.system-workspace .filter-card {
+  margin-bottom: 14px;
+}
+
+.system-selected-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding: 11px 14px;
+  border: 1px solid #e6ecf7;
+  border-radius: 8px;
+  color: #5a6b82;
+  background: #f8faff;
+  font-size: 12px;
+}
+
+.system-scope-card {
+  margin-bottom: 14px;
+}
+
+.system-scope-card .ant-card-body {
+  padding: 18px;
+}
+
+.system-scope-options {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.system-tree-panel {
+  /* 高度随视口伸缩：矮屏保底 360px，高屏最多 720px，避免固定 380px 浪费竖向空间 */
+  height: clamp(360px, calc(100vh - 320px), 720px);
+  padding: 10px 12px;
+  border: 1px solid #edf1f7;
+  border-radius: 8px;
+  overflow-y: auto;
+  background: #fff;
+}
+
+/* 权限矩阵：行=菜单，列=权限位，一屏完成整组配置 */
+.matrix-menu-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.matrix-menu-name {
+  color: #344054;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.matrix-menu-no {
+  color: #98a2b3;
+  font-size: 10px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.matrix-col-title {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.matrix-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 24px;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.matrix-cell.is-changed {
+  background: #e8f1ff;
+  outline: 1px solid #a9c7f0;
+}
+
+.matrix-cell-name {
+  max-width: 56px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #667085;
+  font-size: 10px;
+}
+
+.matrix-na {
+  color: #d0d5dd;
+  font-size: 11px;
+}
+
+.matrix-group-row > td {
+  background: #f7f9fc;
+}
+
+.matrix-group-row .matrix-menu-name {
+  font-weight: 500;
+}
+
+.matrix-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 1px solid #edf1f7;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.matrix-footer-text {
+  color: #667085;
+  font-size: 12px;
+}
+
+.matrix-footer-text b {
+  color: #101828;
+  font-weight: 600;
+}
+
+.system-page-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* 单栏页面（无左侧上下文） */
+.system-page-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* 页面顶部工具条 */
+.system-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+/* 只读提示 */
+.system-readonly-tip,
+.system-context-tip {
+  margin: 10px 0 0;
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+.system-readonly-tip {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #8a6d1a;
+  background: #fffbe6;
+  border: 1px solid #ffe9a8;
+  font-size: 12px;
+}
+
+/* 权限矩阵标题 */
+.system-right-title {
+  margin: 0 0 10px;
+  color: #344054;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 子系统 / 设备勾选项 */
+.system-subsystem-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid #edf1f7;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.system-subsystem-option + .system-subsystem-option {
+  margin-top: 8px;
+}
+
+.system-subsystem-option:hover {
+  border-color: #a9c3f9;
+  background: #f4f8ff;
+}
+
+.system-subsystem-meta {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+  .system-page {
+    grid-template-columns: 1fr;
+  }
+
+  .system-context-list {
+    max-height: 280px;
+  }
+}
+
+/* ---------- 卡务中心：人员与组织 ---------- */
+.card-muted {
+  color: #98a2b3;
+  font-size: 12px;
+}
+
+.card-ok {
+  color: #16a34a;
+}
+
+.card-danger {
+  color: #dc2626;
+}
+
+/* ---------- 卡务中心：账户与卡 ---------- */
+/* 表单栅格：账户信息、开户、换卡等弹窗统一三列，窄屏自动降列 */
+.card-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 16px;
+}
+
+.card-form-grid .ant-form-item {
+  margin-bottom: 16px;
+}
+
+@media (max-width: 1280px) {
+  .card-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .card-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.card-tree-panel {
+  /* 与 system-tree-panel 同高；工具条固定，仅树体区域滚动 */
+  display: flex;
+  flex-direction: column;
+  height: clamp(360px, calc(100vh - 320px), 720px);
+  margin-bottom: 12px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-tree-panel.is-compact {
+  /* 嵌在表单/卡片里时用固定高度，避免把整页撑长 */
+  height: 320px;
+  margin-bottom: 0;
+}
+
+/* 部门树顶部：展开/收起控制条 */
+.card-tree-tools {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px 10px;
+  border-bottom: 1px solid #f0f3f9;
+  background: #fbfcfe;
+}
+
+.card-tree-tools-left,
+.card-tree-tools-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.card-tree-tools-right {
+  gap: 6px;
+  font-size: 12px;
+  color: #5a6b82;
+}
+
+.card-tree-tools-right .ant-checkbox-wrapper {
+  font-size: 12px;
+  color: #5a6b82;
+  white-space: nowrap;
+}
+
+.card-tree-tools .ant-btn {
+  height: 22px;
+  padding: 0 2px;
+  font-size: 12px;
+}
+
+.card-tree-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 6px 10px 8px;
+  overflow-y: auto;
+}
+
+/* 部门树搜索框 */
+/* 部门树搜索行：搜索框 + 右侧「显示停用」图标开关，两者同一行不额外占高度 */
+.card-tree-search-row {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.card-tree-search-row .card-tree-search {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.card-tree-filter-wrap {
+  flex: none;
+  display: inline-flex;
+}
+
+.card-tree-filter-btn {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  color: #8a97a8;
+  border-color: #e3e9f2;
+}
+
+.card-tree-filter-btn.is-active {
+  color: #2563eb;
+  border-color: #bfd4ff;
+  background: #f2f7ff;
+}
+
+.card-tree-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #edf1f7;
+  font-size: 12px;
+}
+
+.card-tree-footer-actions {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.card-dept-node {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.4;
+}
+
+.card-dept-node-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #344054;
+  font-size: 13px;
+}
+
+.card-dept-node-name .ant-tag {
+  margin-inline-end: 0;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+.card-dept-node-meta {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+.card-toolbar-label {
+  color: #344054;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card-inline-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #5a6b82;
+  font-size: 12px;
+}
+
+/* 统计卡片行（人脸库等单栏页面） */
+.card-stat-row {
+  margin-bottom: 12px;
+}
+
+.card-face-card {
+  width: 100%;
+  height: 100%;
+}
+
+.card-face-card .ant-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.card-face-card-body {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.card-face-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.card-face-meta strong {
+  color: #344054;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card-face-meta span {
+  color: #98a2b3;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-face-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.card-face-tags .ant-tag {
+  margin-inline-end: 0;
+}
+
+.card-face-actions {
+  justify-content: flex-start;
+}
+
+.card-face-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: 6px;
+  background: #f2f4f7;
+  object-fit: cover;
+  color: #98a2b3;
+  font-size: 18px;
+}
+
+.card-face-thumb.is-empty {
+  border: 1px dashed #d0d5dd;
+  background: #fafbfc;
+}
+
+.card-face-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.card-face-uploader .card-muted {
+  margin: 0;
+}
+
+.card-batch-result {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #f5f8ff;
+  color: #344054;
+  font-size: 12px;
+}
+
